@@ -1,3 +1,4 @@
+#welcome script
 echo "Welcome ${USER}"
 echo "It's:"
 date
