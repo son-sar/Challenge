@@ -1,6 +1,5 @@
-echo "Welcome"
-id -un 
-echo "It is:"
+echo "Welcome ${USER}"
+echo "It's:"
 date
 
 #weather
