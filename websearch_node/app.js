@@ -14,18 +14,50 @@
 
 'use strict';
 
+/* // ----- BUCKET CREATION
+
+// Imports the Google Cloud client library
+const {Storage} = require('@google-cloud/storage');
+
+// For more information on ways to initialize Storage, please see
+// https://googleapis.dev/nodejs/storage/latest/Storage.html
+
+// Creates a client using Application Default Credentials
+const storage = new Storage();
+
+// Creates a client from a Google service account key
+// const storage = new Storage({keyFilename: 'key.json'});
+
+/**
+ * TODO(developer): Uncomment these variables before running the sample.
+ */
+// The ID of your GCS bucket
+// const bucketName = 'your-unique-bucket-name';
+/* 
+async function createBucket() {
+  // Creates the new bucket
+  await storage.createBucket(bucketName);
+  console.log(`Bucket ${bucketName} created.`);
+}
+
+createBucket().catch(console.error); 
+
+// ----- BUCKET CREATION */
+
+
 //[START gae_node_request_example]
 const fs = require('fs/promises');
 
-const csv = require('csv-parser')
+const http = require('http');
+
+const csv = require('csv-parser');
 
 const express = require('express');
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.status(200).sendFile(__dirname+"/index.html");
-});
+const ps = require("prompt-sync")
+const prompt = ps();
 
 // Start the server
 const PORT = parseInt(process.env.PORT) || 8080;
@@ -35,17 +67,22 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 
-// get user input
-app.get("/getphone", function (req, res){
-  var phone = req.query.phone;
+console.log('Server is Running');
 
-  if (phone != "") {
-      res.send("Your Your search entry is " + phone);
-  } else {
-      res.send("Please provide the phone model");
-  }
-  res.end();
-});
+// get user input part 2 thru shell
+let phone_model = prompt("Enter your phone model:");
+console.log(`You are looking for ${phone_model}`);
+
+// set base_url
+let base_url = "amazon.de";
+
+let min_price = "price_low_to_high";
+
+let max_price = "price_high_to_low";
+
+let avg_price = "";
+
+let cmn_price = "";
 
 // [END gae_node_request_example]
 
@@ -56,23 +93,40 @@ const axios = require('axios');
 const params = {
 api_key: "7CD73A917AB54D2E9E071865C03A4C46",
   type: "search",
-  amazon_domain: "amazon.de",
-  search_term: "i Phone",
-  sort_by: "price_low_to_high",
+  amazon_domain: base_url,
+  search_term: phone_model,
+  sort_by: min_price,
   currency: "eur",
-  output: "csv"
+  output: "json"
 }
 
+console.log("params:", params);
+console.log("output2:", params.output[2]);
+
+// better use json instead of csv
+
 // get search term from keyword input 
+let csv_response = {};
 
 // make the http GET request to Rainforest API
 axios.get('https://api.rainforestapi.com/request', { params })
 .then(response => {
 
     // print the CSV response from Rainforest API
-    console.log(response.data);
-    const csv_response = response.data;
+    console.log("respsonse.data:", response.data);
+    csv_response = response.data;
 
+    console.log("rd_search_results_pos1:", response.data.search_results[0]);
+    console.log("rd_search_results_pos1_titel:", response.data.search_results[0].title);
+    console.log("rd_search_results_pos1_preis:", response.data.search_results[0].price.raw);
+
+    // --> in eine Tabelle speichern 
+
+    //console.log("rd_search_results:", response.data.search_results);
+
+    // store data in a new object and then export it to a csv file (with timestamp) and then to cloud storage 
+
+/* 
     async function example() {
       try {
         const content = csv_response;
@@ -81,15 +135,17 @@ axios.get('https://api.rainforestapi.com/request', { params })
         console.log(err);
       }
     }
-    example();
+    example(); 
+*/
+
+// https://cloud.google.com/nodejs/docs/reference/gcs-resumable-upload/latest
 
   }).catch(error => {
 // catch and print the error
 console.log(error);
 })
 
-
-
+console.log("response data from axios: ", csv_response);
 
 // API END 
 

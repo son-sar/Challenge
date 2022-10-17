@@ -13,22 +13,18 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        <h1><span>Phone Search !</span></h1>
-        <form method='GET' action="/getphone">
-        <label for="Type in Phone Name"></label>
-        <input type="text" id="phone" placeholder="Type in the model" maxlength="50">
-        <input type="button" id="nodeGoto" />
-    </form>
-     <script>
-        var inputElement = document.createElement('input');
-        document.getElementById("nodeGoto").addEventListener("click", function() {
-    gotoNode(result.name);
-}, false);
-
-​document.body.appendChild(inputElement);​
-     </script>
+        
+<form action="", method="POST">
+    <fieldset>
+      <legend>Personal information:</legend>
+      First name:<br>
+      <input type="text" name="firstname">
+      <br>
+      Last name:<br>
+      <input type="text" name="lastname">
+      <br><br>
+      <input type="submit" value="Submit">
+    </fieldset>
+  </form>
     </body>
 </html>
