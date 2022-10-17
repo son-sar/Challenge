@@ -90,6 +90,7 @@ let cmn_price = "";
 const axios = require('axios');
 
 // set up the request parameters
+// save as environment variable
 const params = {
 api_key: "7CD73A917AB54D2E9E071865C03A4C46",
   type: "search",
@@ -102,6 +103,8 @@ api_key: "7CD73A917AB54D2E9E071865C03A4C46",
 
 console.log("params:", params);
 console.log("output2:", params.output[2]);
+
+// save API key outside 
 
 // better use json instead of csv
 
@@ -116,27 +119,38 @@ axios.get('https://api.rainforestapi.com/request', { params })
     console.log("respsonse.data:", response.data);
     csv_response = response.data;
 
+    console.log("rd_timestamp", response.data.request_metadata.created_at);
+
     console.log("rd_search_results_pos1:", response.data.search_results[0]);
     console.log("rd_search_results_pos1_titel:", response.data.search_results[0].title);
-    console.log("rd_search_results_pos1_preis:", response.data.search_results[0].price.raw);
+    //console.log("rd_search_results_pos1_preis:", response.data.search_results[0].prices[0].raw);
+    //console.log("rd_search_results_pos1_preis:", response.data.search_results[0].price);
+    //console.log("rd_search_results_pos1_preis:", response.data.search_results[0].price.raw);
 
-    // --> in eine Tabelle speichern 
+    const myPhoneData = {
+      timestamp: response.data.request_metadata.created_at,
+      phone: response.data.search_results[0].title,
+      min_price: response.data.search_results[0].price.raw
+    }
+
+    console.log("myPhoneData", myPhoneData);
+
+    // --> add to table  
 
     //console.log("rd_search_results:", response.data.search_results);
 
     // store data in a new object and then export it to a csv file (with timestamp) and then to cloud storage 
 
-/* 
+
     async function example() {
       try {
-        const content = csv_response;
-        await fs.writeFile('/Users/so/gitp/Challenge/websearch_node/phone_prices.csv', content);
+        await fs.writeFile('phone_prices.json', JSON.stringify(myPhoneData));
       } catch (err) {
         console.log(err);
       }
     }
     example(); 
-*/
+
 
 // https://cloud.google.com/nodejs/docs/reference/gcs-resumable-upload/latest
 
