@@ -150,6 +150,9 @@ axios.get('https://api.rainforestapi.com/request', { params })
     // store data in a new object and then export it to a csv file (with timestamp) and then to cloud storage 
    // https://cloud.google.com/nodejs/docs/reference/gcs-resumable-upload/latest
 
+
+    // if myPhoneData.timestamp 
+
     async function storeFile() {
       try {
         await fs.writeFile('phone_prices.json', JSON.stringify(myPhoneData));
