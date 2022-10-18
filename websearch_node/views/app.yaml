@@ -1,0 +1,4 @@
+runtime: nodejs16
+
+env_variables:
+  BUCKET_NAME: "my-phone-test-bucket"

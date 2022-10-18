@@ -1,4 +1,4 @@
-// Copyright 2017 Google LLC
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// import gcp storage
+// Start the server
 
-'use strict';
+const express = require('express');
+const path = require('path');
 
-const Server = require("./server");
+const app = express();
 
-//[START gae_node_request_example]
 const fs = require('fs/promises');
 
 const http = require('http');
 const csv = require('csv-parser');
-
-const express = require('express');
-const app = express();
 
 const ps = require("prompt-sync")
 const prompt = ps();
@@ -33,18 +30,29 @@ const prompt = ps();
 const axios = require('axios');
 const { clear } = require("console");
 
-axios.get(`localhost:8080/search`).then(resp => {
-    console.log("response data", resp.data);
-    console.log("phone_model", `${phone_model}`);
+// [START enable_parser]
+// This middleware is available in Express v4.16.0 onwards
+app.use(express.urlencoded({extended: true}));
+// [END enable_parser]
+
+app.get('/', (req, res) => {
+  res.send('Hello from App Engine!');
 });
 
+// [START add_display_form]
+app.get('/search', (req, res) => {
+  res.sendFile(path.join(__dirname, '/form.html'));
+});
+// [END add_display_form]
 
-//console.log("phone_model from request", phone_model);
-console.log("phone_model from request 2", `${phone_model}`);
-
-// get user input part 2 thru shell
-//let phone_model = prompt("Enter your phone model:");
-//console.log(`You are looking for ${phone_model}`);
+// [START add_post_handler]
+app.post('/search', (req, res) => {
+  console.log({
+    phone_model: req.body.phone_model
+  });
+  let phone_model = req.body.phone_model;
+  console.log("phone_model 2", phone_model);
+  res.send(`Phone model entered: ${phone_model}`);
 
 // set base_url
 let base_url = "amazon.de";
@@ -156,8 +164,16 @@ axios.get('https://api.rainforestapi.com/request', { params })
 console.log(error);
 })
 
-//console.log("response data from axios: ", csv_response);
+});
+// [END add_post_handler]
 
-// API END 
 
-module.exports = app;
+const PORT = parseInt(process.env.PORT) || 8080;
+
+const Server = app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+  console.log('Press Ctrl+C to quit.');
+});
+
+console.log('Server is Running');
+
