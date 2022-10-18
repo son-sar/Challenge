@@ -8,8 +8,6 @@
 // Imports the Google Cloud client library
 const { Storage } = require('@google-cloud/storage');
 
-
-
 // Creates a GCP Storage client
 const storage = new Storage({
     projectId: "adtest-365508",
@@ -99,3 +97,5 @@ await storage
 
 console.log(`gs://${bucketName}/${filename} is now public.`);
  */
+
+module.export = Storage;

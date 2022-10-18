@@ -151,11 +151,34 @@ axios.get('https://api.rainforestapi.com/request', { params })
    // https://cloud.google.com/nodejs/docs/reference/gcs-resumable-upload/latest
 
 
-    // if myPhoneData.timestamp 
+    // if myPhoneData.timestamp
 
     async function storeFile() {
       try {
+
+// Imports the Google Cloud client library
+const { Storage } = require('@google-cloud/storage');
+
+// Creates a GCP Storage client
+const storage = new Storage({
+    projectId: "adtest-365508",
+});
+
+// Declare the bucket you wanna upload the files
+const bucketName = "my-phone-test-bucket";
+ 
         await fs.writeFile('phone_prices.json', JSON.stringify(myPhoneData));
+
+storage
+.bucket(bucketName)
+.upload("phone_prices.json", { destination: '/my_phone_tables/phone_prices.json' })
+.then(() => {
+  console.log('success');
+})
+.catch((err) => {
+  console.error('ERROR:', err);
+});
+
       } catch (err) {
         console.log(err);
       }
