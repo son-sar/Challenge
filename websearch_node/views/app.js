@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Start the server
-
 const express = require('express');
 const path = require('path');
 
