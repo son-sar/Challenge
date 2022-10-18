@@ -1,6 +1,38 @@
-How to get the app running on app engine
+# Updating Your Web Service Sample for Node.js in the App Engine Standard Environment
 
-1. Create the bucket with bucket.js
+This is an altered application for the
+[Updating Your Web Service][tutorial]
+tutorial found in the [Google App Engine Node.js standard environment][appengine]
+documentation.
 
-2. Run app.yaml --> with scripts
+* [Setup](#setup)
+* [Running locally](#running-locally)
+* [Deploying to App Engine](#deploying-to-app-engine)
+* [Running the tests](#running-the-tests)
 
+## Setup
+
+Before you can run or deploy the sample, you need to do the following:
+
+1.  Refer to the [appengine/README.md][readme] file for instructions on running and deploying.
+
+1.  Install dependencies:
+
+        npm install
+
+## Running locally
+
+    npm start
+
+## Deploying to App Engine
+
+    gcloud app deploy
+
+## Running the tests
+
+See [Contributing][contributing].
+
+[appengine]: https://cloud.google.com/appengine/docs/standard/nodejs
+[tutorial]: https://cloud.google.com/appengine/docs/standard/nodejs/building-app/updating-web-service
+[readme]: ../../README.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md
