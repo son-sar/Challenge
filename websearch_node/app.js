@@ -14,60 +14,19 @@
 
 'use strict';
 
-/* // ----- BUCKET CREATION
-
-// Imports the Google Cloud client library
-const {Storage} = require('@google-cloud/storage');
-
-// For more information on ways to initialize Storage, please see
-// https://googleapis.dev/nodejs/storage/latest/Storage.html
-
-// Creates a client using Application Default Credentials
-const storage = new Storage();
-
-// Creates a client from a Google service account key
-// const storage = new Storage({keyFilename: 'key.json'});
-
-/**
- * TODO(developer): Uncomment these variables before running the sample.
- */
-// The ID of your GCS bucket
-// const bucketName = 'your-unique-bucket-name';
-/* 
-async function createBucket() {
-  // Creates the new bucket
-  await storage.createBucket(bucketName);
-  console.log(`Bucket ${bucketName} created.`);
-}
-
-createBucket().catch(console.error); 
-
-// ----- BUCKET CREATION */
-
+const Server = require("./server");
 
 //[START gae_node_request_example]
 const fs = require('fs/promises');
 
 const http = require('http');
-
 const csv = require('csv-parser');
 
 const express = require('express');
-
 const app = express();
 
 const ps = require("prompt-sync")
 const prompt = ps();
-
-// Start the server
-const PORT = parseInt(process.env.PORT) || 8080;
-
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
-
-console.log('Server is Running');
 
 // get user input part 2 thru shell
 let phone_model = prompt("Enter your phone model:");
@@ -78,16 +37,17 @@ let base_url = "amazon.de";
 
 let min_price = "price_low_to_high";
 
-let max_price = "price_high_to_low";
+//let max_price = "price_high_to_low";
 
-let avg_price = "";
+//let avg_price = "";
 
-let cmn_price = "";
+//let cmn_price = "";
 
 // [END gae_node_request_example]
 
 // Rainforest Amazon API
 const axios = require('axios');
+const { clear } = require("console");
 
 // set up the request parameters
 // save as environment variable
@@ -104,9 +64,7 @@ api_key: "7CD73A917AB54D2E9E071865C03A4C46",
 console.log("params:", params);
 console.log("output2:", params.output[2]);
 
-// save API key outside 
-
-// better use json instead of csv
+// save API key as environment variable 
 
 // get search term from keyword input 
 let csv_response = {};
@@ -120,17 +78,47 @@ axios.get('https://api.rainforestapi.com/request', { params })
     csv_response = response.data;
 
     console.log("rd_timestamp", response.data.request_metadata.created_at);
+/* 
+    console.log("search_results[0]:", response.data.search_results[0]);
+   /*  console.log("search_results[0].title:", response.data.search_results[0].title);
+    console.log("search_results[0].prices[0].raw:", response.data.search_results[0].prices[0].raw);
+    console.log("search_results[0].prices[0].value:", response.data.search_results[0].prices[0].value);
+    console.log("search_results[0].price:", response.data.search_results[0].price); */
+    // undefined console.log("search_results[0].prices.value:", response.data.search_results[0].prices.value);
+    // console.log("search_results[0].price.raw:", response.data.search_results[0].price.raw);
+    // undefined console.log("search_results.prices[0].value:", response.data.search_results.prices[0].value);
 
-    console.log("rd_search_results_pos1:", response.data.search_results[0]);
-    console.log("rd_search_results_pos1_titel:", response.data.search_results[0].title);
-    //console.log("rd_search_results_pos1_preis:", response.data.search_results[0].prices[0].raw);
-    //console.log("rd_search_results_pos1_preis:", response.data.search_results[0].price);
-    //console.log("rd_search_results_pos1_preis:", response.data.search_results[0].price.raw);
+    // looking for iPhone 14 Pro 1TB */
+
+    let max_price;
+
+    console.log("response.data.search_results.length", response.data.search_results.length);
+
+    max_price = response.data.search_results[response.data.search_results.length - 1].price.raw;
+/* 
+    let average_price;
+    let sum = 0;
+ 
+    console.log("response.data.search_results.prices[i].value", response.data.search_results.prices[].value);
+
+
+    for (let i = 0; i < response.data.search_results.length; i++ ){
+        sum += parseInt(response.data.search_results[i].price.raw, 10);
+        console.log("sum", sum); //don't forget to add the base
+    }
+    
+    average_price = sum/response.data.search_results.length;
+  
+    console.log("average price", average_price); 
+*/
+
+    console.log ("max_price", max_price);
 
     const myPhoneData = {
       timestamp: response.data.request_metadata.created_at,
       phone: response.data.search_results[0].title,
-      min_price: response.data.search_results[0].price.raw
+      min_price: response.data.search_results[0].price.raw,
+      max_price: max_price
     }
 
     console.log("myPhoneData", myPhoneData);
@@ -140,26 +128,23 @@ axios.get('https://api.rainforestapi.com/request', { params })
     //console.log("rd_search_results:", response.data.search_results);
 
     // store data in a new object and then export it to a csv file (with timestamp) and then to cloud storage 
+   // https://cloud.google.com/nodejs/docs/reference/gcs-resumable-upload/latest
 
-
-    async function example() {
+    async function storeFile() {
       try {
         await fs.writeFile('phone_prices.json', JSON.stringify(myPhoneData));
       } catch (err) {
         console.log(err);
       }
     }
-    example(); 
-
-
-// https://cloud.google.com/nodejs/docs/reference/gcs-resumable-upload/latest
+    storeFile(); 
 
   }).catch(error => {
 // catch and print the error
 console.log(error);
 })
 
-console.log("response data from axios: ", csv_response);
+//console.log("response data from axios: ", csv_response);
 
 // API END 
 
