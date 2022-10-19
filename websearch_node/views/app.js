@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 const express = require('express');
 const path = require('path');
 
@@ -57,6 +58,7 @@ app.get('/search', (req, res) => {
 // [START add_post_handler]
 app.post('/search', (req, res) => {
     console.log("timestamp-after post", req.timestamp);
+
     console.log({
         phone_model: req.body.phone_model
     });
@@ -70,12 +72,6 @@ app.post('/search', (req, res) => {
     const min_price = "price_low_to_high";
 
     const api_key_rain = process.env.API_KEY;
-
-    //let max_price = "price_high_to_low";
-
-    //let avg_price = "";
-
-    //let cmn_price = "";
 
     // [END gae_node_request_example]
 
@@ -122,13 +118,12 @@ app.post('/search', (req, res) => {
             // console.log("search_results[0].price.raw:", response.data.search_results[0].price.raw);
             // undefined console.log("search_results.prices[0].value:", response.data.search_results.prices[0].value);
 
-            // looking for iPhone 14 Pro 1TB */
-
             let max_price;
 
-            console.log("response.data.search_results.length", response.data.search_results.length);
+            //console.log("response.data.search_results.length", response.data.search_results.length);
 
             max_price = response.data.search_results[response.data.search_results.length - 1].price.raw;
+
             /* 
                 let average_price;
                 let sum = 0;
@@ -246,3 +241,5 @@ const Server = app.listen(PORT, () => {
 });
 
 console.log('Server is Running');
+
+// end server
