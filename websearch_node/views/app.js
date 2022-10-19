@@ -24,6 +24,9 @@ const csv = require('csv-parser');
 const ps = require("prompt-sync")
 const prompt = ps();
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const time = require('express-timestamp');
 
 const axios = require('axios');
@@ -62,9 +65,11 @@ app.post('/search', (req, res) => {
     res.send(`Phone model entered: ${phone_model}`);
 
     // set base_url
-    let base_url = "amazon.de";
+    const base_url = "amazon.de";
 
-    let min_price = "price_low_to_high";
+    const min_price = "price_low_to_high";
+
+    const api_key_rain = process.env.API_KEY;
 
     //let max_price = "price_high_to_low";
 
@@ -79,7 +84,7 @@ app.post('/search', (req, res) => {
     // set up the request parameters
     // save as environment variable
     const params = {
-        api_key: "7CD73A917AB54D2E9E071865C03A4C46",
+        api_key: api_key_rain,
         type: "search",
         amazon_domain: base_url,
         search_term: phone_model,
